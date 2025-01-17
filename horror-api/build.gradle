@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 java {
@@ -15,7 +16,7 @@ repositories {
 // Task to invoke the custom build script
 task buildNativeLibraries(type: Exec) {
     workingDir = projectDir // Set to the directory containing build.sh
-    commandLine './build.sh'
+    commandLine './build-native.sh'
 
     // Declare inputs and outputs
     inputs.files fileTree(dir: 'src/native-src', include: '**/*.c') // Source files
@@ -43,4 +44,21 @@ tasks.jar {
         include '**/*.so'
     }
 }
+
+// Maven publishing configuration
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.horror' 
+            artifactId = 'tag-library' 
+            version = '1.0.0-SNAPSHOT' 
+
+            from components.java // Use the Java component to publish the JAR
+        }
+    }
+
+}
+
+defaultTasks 'build', 'publishToMavenLocal'
+
 

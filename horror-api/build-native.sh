@@ -20,7 +20,7 @@ extract_native_build() {
     docker create --name "$container_name" "$tag"
 
     echo "Copying build artifact for $platform"
-    docker cp "$container_name:/build/libtag_library.so" "$output_file"
+    docker cp "$container_name:/app/libtag_library.so" "$output_file"
 
     echo "Cleaning up container for $platform"
     docker rm -f "$container_name"

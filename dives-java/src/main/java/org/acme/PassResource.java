@@ -9,6 +9,8 @@ import org.acme.dto.PassDTO;
 import org.acme.events.model.PassEvent;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 
+import com.horror.TagLibrary;
+
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -46,6 +48,10 @@ public class PassResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<List<PassDTO>> getAll() {
+
+    // Get tags 
+    TagLibrary t = new TagLibrary();
+    System.out.println(t.getTags());
     
     apiCallCounter.add(1, Attributes.of(AttributeKey.stringKey("api"), "getPasses"));
     

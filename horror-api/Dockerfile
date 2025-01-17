@@ -9,19 +9,27 @@ RUN apk add --no-cache \
     musl-dev \
     openjdk21
 
+# Set JAVA_HOME explicitly
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 # Set working directory
 WORKDIR /build
 
-# Copy the native source code
-COPY src/native-src .
+# Copy source files
+COPY src src
+COPY Makefile .
 
-# Build for linux-arm64
-RUN gcc -shared -fPIC -I"$JAVA_HOME/include" \
-    -I"$JAVA_HOME/include/linux" \
-    -o /build/libtag_library.so TagLibrary.c
+# Build using Makefile
+RUN make clean all VERBOSE=1
 
+# Final stage: minimal runtime image
+FROM alpine:latest
 
+# Set working directory
+WORKDIR /app
 
+# Copy the built shared library from the builder stage
+COPY --from=builder /build/build/libtag_library.so .
 
+# Default command (modify as needed)
+CMD ["sh"]
