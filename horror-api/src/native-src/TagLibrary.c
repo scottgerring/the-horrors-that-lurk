@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include "TagLibrary.h"
+#include "com_horror_TagLibrary.h"
 
 /* Helper function to add key-value pairs to a Java map */
 void addToMap(JNIEnv *env, jobject map, const char *key, const char *value) {

@@ -40,6 +40,6 @@ gcc -shared -fPIC -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/darwin"  src/nati
 #
 # Copy everything into the JARs tree for staging
 # 
-mkdir -p src/main/resources/native
-cp output/* src/main/resources/native/
+# mkdir -p src/main/resources/native
+# cp output/* src/main/resources/native/
 

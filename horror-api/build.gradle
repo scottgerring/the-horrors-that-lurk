@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21)) // Adjust for your desired Java version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Task to invoke the custom build script
+task buildNativeLibraries(type: Exec) {
+    workingDir = projectDir // Set to the directory containing build.sh
+    commandLine './build.sh'
+
+    // Declare inputs and outputs
+    inputs.files fileTree(dir: 'src/native-src', include: '**/*.c') // Source files
+    outputs.files fileTree(dir: 'output', include: '**/*.so')      // Generated `.so` files
+}
+
+// Ensure the custom script runs before the main build process if needed
+tasks.jar {
+    dependsOn buildNativeLibraries
+}
+
+// Add the native library output to the jar if needed
+tasks.jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.horror.TagLibrary' 
+        )
+    }
+
+    // Include compiled Java classes
+    from(sourceSets.main.output)
+
+    // Include the native library files in the JAR if desired
+    from('output') {
+        include '**/*.so'
+    }
+}
+
