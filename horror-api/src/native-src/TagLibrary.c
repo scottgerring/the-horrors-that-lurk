@@ -29,7 +29,7 @@ void getCurrentDate(char *buffer, size_t bufferSize) {
 }
 
 /* JNI function implementation */
-JNIEXPORT jobject JNICALL Java_TagLibrary_getTags(JNIEnv *env, jobject obj) {
+JNIEXPORT jobject JNICALL Java_com_horror_TagLibrary_getTags(JNIEnv *env, jobject obj) {
     // Create a new HashMap
     jclass hashMapClass = (*env)->FindClass(env, "java/util/HashMap");
     jmethodID init = (*env)->GetMethodID(env, hashMapClass, "<init>", "()V");
