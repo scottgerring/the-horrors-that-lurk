@@ -2,22 +2,33 @@
 
 set -e
 
-#
-# Linux - AMD64 and ARM64 builds
-# 
+# Function to build, create, and extract a native build for a given architecture
+extract_native_build() {
+    local platform=$1
+    local tag="native-build-${platform##*/}" # Use platform suffix for tag
+    local container_name="extract-${tag}"
+    local output_file="./output/libtag-${platform##*/}.so"
 
-# Build our amd64 and arm64 linux builds 
-docker rm -f extract-native-build-arm64
-docker buildx build --platform linux/arm64 -t native-build-arm64 .
-docker create --name extract-native-build-arm64 native-build-arm64
-docker cp extract-native-build-arm64:/build/libtag_library.so ./output/libtag-linux-arm64.so
-docker rm -f extract-native-build-arm64
+    # Ensure the output directory exists
+    mkdir -p ./output
 
-docker rm -f extract-native-build-amd64
-docker buildx build --platform linux/amd64 -t native-build-amd64 .
-docker create --name extract-native-build-amd64 native-build-amd64
-docker cp extract-native-build-amd64:/build/libtag_library.so ./output/libtag-linux-amd64.so
-docker rm -f extract-native-build-amd64
+    echo "Building for platform: $platform"
+    docker rm -f "$container_name" >/dev/null 2>&1 || true
+    docker buildx build --platform "$platform" -t "$tag" .
+
+    echo "Creating container for $platform"
+    docker create --name "$container_name" "$tag"
+
+    echo "Copying build artifact for $platform"
+    docker cp "$container_name:/build/libtag_library.so" "$output_file"
+
+    echo "Cleaning up container for $platform"
+    docker rm -f "$container_name"
+}
+
+# Extract for each desired platform
+extract_native_build "linux/arm64"
+extract_native_build "linux/amd64"
 
 #
 # MacOS - ARM64 build
