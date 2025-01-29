@@ -14,7 +14,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
-public class PassResourceTest {
+public class DiveSiteResourceTest {
 
     @Inject
     Mutiny.SessionFactory sessionFactory;
@@ -24,19 +24,19 @@ public class PassResourceTest {
         sessionFactory.withTransaction(session -> Uni.combine().all()
                 .unis(
                         // Clear tables
-                        session.createNativeQuery("TRUNCATE TABLE passes CASCADE").executeUpdate(),
+                        session.createNativeQuery("TRUNCATE TABLE diveSites CASCADE").executeUpdate(),
                         session.createNativeQuery("TRUNCATE TABLE country CASCADE").executeUpdate(),
 
                         // Reset the sequence
-                        session.createNativeQuery("ALTER SEQUENCE passes_SEQ RESTART WITH 1").executeUpdate(),
+                        session.createNativeQuery("ALTER SEQUENCE diveSites_SEQ RESTART WITH 1").executeUpdate(),
 
                         // Reinsert test data for Country
                         session.createNativeQuery("INSERT INTO country (shortCode, name) VALUES ('US', 'United States')").executeUpdate(),
                         session.createNativeQuery("INSERT INTO country (shortCode, name) VALUES ('CH', 'Switzerland')").executeUpdate(),
 
                         // Reinsert test data for Pass using the sequence for IDs
-                        session.createNativeQuery("INSERT INTO passes (id, name, ascent, country_id, latitude, longitude) VALUES (nextval('passes_SEQ'), 'Mountain Pass', 1200, 'US', 1.2, 3.4)").executeUpdate(),
-                        session.createNativeQuery("INSERT INTO passes (id, name, ascent, country_id, latitude, longitude) VALUES (nextval('passes_SEQ'), 'Alpine Pass', 1800, 'CH', -5.6, -7.8)").executeUpdate()
+                        session.createNativeQuery("INSERT INTO diveSites (id, name, descent, country_id, latitude, longitude) VALUES (nextval('diveSites_SEQ'), 'Mountain Pass', 1200, 'US', 1.2, 3.4)").executeUpdate(),
+                        session.createNativeQuery("INSERT INTO diveSites (id, name, descent, country_id, latitude, longitude) VALUES (nextval('diveSites_SEQ'), 'Alpine Pass', 1800, 'CH', -5.6, -7.8)").executeUpdate()
                 ).discardItems()
         ).await().indefinitely();
     }
@@ -44,7 +44,7 @@ public class PassResourceTest {
     @Test
     public void testGetAll() {
         given()
-                .when().get("/api/v1/passes")
+                .when().get("/api/v1/divesites")
                 .then()
                 .statusCode(200)
                 .body("$.size()", is(2))
@@ -57,7 +57,7 @@ public class PassResourceTest {
     @Test
     public void testGetById() {
         given()
-                .when().get("/api/v1/passes/1")
+                .when().get("/api/v1/divesites/1")
                 .then()
                 .statusCode(200)
                 .body("name", is("Mountain Pass"))
@@ -65,54 +65,54 @@ public class PassResourceTest {
     }
 
     @Test
-    public void testCreatePass() {
+    public void testCreateDiveSite() {
         // Step 1: Create the Pass
-        Integer passId = given()
+        Integer diveSiteId = given()
                 .contentType("application/json")
-                .body("{\"name\":\"New Pass\",\"ascent\":1500,\"country\":\"United States\"}")
-                .when().post("/api/v1/passes")
+                .body("{\"name\":\"New Pass\",\"descent\":1500,\"country\":\"United States\"}")
+                .when().post("/api/v1/divesites")
                 .then()
                 .statusCode(201)
                 .body("name", is("New Pass"))
                 .body("country", is("United States"))
-                .body("ascent", is(1500))
+                .body("descent", is(1500))
                 .extract().path("id"); // Extract the ID of the created pass
 
-        // Step 2: Retrieve the Pass by ID and verify it
+        // Step 2: Retrieve the dive site by ID and verify it
         given()
-                .when().get("/api/v1/passes/" + passId)
+                .when().get("/api/v1/divesites/" + diveSiteId)
                 .then()
                 .statusCode(200)
-                .body("id", is(passId))
+                .body("id", is(diveSiteId))
                 .body("name", is("New Pass"))
                 .body("country", is("United States"))
-                .body("ascent", is(1500));
+                .body("descent", is(1500));
     }
 
     @Test
-    public void testUpdatePass() {
+    public void testUpdateDiveSite() {
         given()
                 .contentType("application/json")
-                .body("{\"name\":\"Updated Pass\",\"ascent\":1600,\"country\":\"Switzerland\"}")
-                .when().put("/api/v1/passes/2")
+                .body("{\"name\":\"Updated Pass\",\"descent\":1600,\"country\":\"Switzerland\"}")
+                .when().put("/api/v1/divesites/2")
                 .then()
                 .statusCode(200)
                 .body("name", is("Updated Pass"))
                 .body("country", is("Switzerland"))
-                .body("ascent", is(1600));
+                .body("descent", is(1600));
     }
 
     @Test
-    public void testDeletePass() {
+    public void testDeleteDiveSite() {
         given()
-                .when().delete("/api/v1/passes/1")
+                .when().delete("/api/v1/divesites/1")
                 .then()
                 .statusCode(200)
                 .body(is("Deleted"));
 
         // Verify deletion
         given()
-                .when().get("/api/v1/passes/1")
+                .when().get("/api/v1/divesites/1")
                 .then()
                 .statusCode(404);
     }

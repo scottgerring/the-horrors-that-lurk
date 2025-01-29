@@ -7,7 +7,7 @@ extract_native_build() {
     local platform=$1
     local tag="native-build-${platform##*/}" # Use platform suffix for tag
     local container_name="extract-${tag}"
-    local output_file="./output/libtag-${platform##*/}.so"
+    local output_file="./output/libtag-linux-${platform##*/}.so"
 
     # Ensure the output directory exists
     mkdir -p ./output

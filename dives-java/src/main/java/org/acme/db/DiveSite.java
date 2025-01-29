@@ -4,21 +4,21 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "passes")
-public class Pass extends PanacheEntityBase {
+@Table(name = "diveSites")
+public class DiveSite extends PanacheEntityBase {
 
     // We extend PanacheEntityBase, so we can customize ID, so we can use a linear sequence generator.
     // This makes testing easier, as our IDs don't jump around!
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passes_seq")
-    @SequenceGenerator(name = "passes_seq", sequenceName = "passes_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "diveSites_seq")
+    @SequenceGenerator(name = "diveSites_seq", sequenceName = "diveSites_SEQ", allocationSize = 1)
     public Long id;
 
     @Column(name = "name")
     public String name;
 
-    @Column(name = "ascent")
-    public int ascent;
+    @Column(name = "descent")
+    public int descent;
 
     @Column(name = "latitude")
     public double latitude;
