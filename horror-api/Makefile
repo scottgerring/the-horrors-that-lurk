@@ -10,8 +10,10 @@ JAVAC := javac
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
     JNI_PLATFORM := darwin
+    LDFLAGS := -dynamiclib
 else
     JNI_PLATFORM := linux
+    LDFLAGS := -shared
 endif
 CFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(JNI_PLATFORM)
 
@@ -39,7 +41,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(JNI_HEADER) | $(OBJ_DIR)
 
 # Link C
 $(LIBRARY): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 # Create target dir
 $(OBJ_DIR):

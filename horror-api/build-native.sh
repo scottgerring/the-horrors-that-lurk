@@ -35,7 +35,8 @@ extract_native_build "linux/amd64"
 #
 . ~/.sdkman/bin/sdkman-init.sh
 sdk use java 21-oracle
-gcc -shared -fPIC -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/darwin"  src/native-src/TagLibrary.c -o output/libtag-darwin-arm64.so
+make all
+cp build/TagLibrary.o output/libtag-darwin-arm64.so
 
 #
 # Copy everything into the JARs tree for staging
