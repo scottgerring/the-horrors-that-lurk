@@ -1,16 +1,8 @@
 # Base image for building
-FROM alpine:latest as builder
+FROM ubuntu:oracular as builder
 
 # Install build dependencies
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    make \
-    musl-dev \
-    openjdk21
-
-# Set JAVA_HOME explicitly
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+RUN apt-get update && apt-get install -y build-essential openjdk-21-jdk-headless
 
 # Set working directory
 WORKDIR /build

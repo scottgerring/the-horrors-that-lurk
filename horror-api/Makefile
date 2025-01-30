@@ -3,8 +3,8 @@ CC := gcc
 CFLAGS := -shared -fPIC
 
 # Set JAVA_HOME only if it is not already set in the environment
-JAVA_HOME ?= /usr/lib/jvm/java-21-openjdk
-JAVAC := javac
+JAVA_HOME ?= $(shell readlink -f /usr/bin/java | sed "s:/bin/java::")
+JAVAC := $(JAVA_HOME)/bin/javac
 
 # Discover our JNI includes based on platform, then add to the CFLAGS
 UNAME_S := $(shell uname -s)
@@ -31,6 +31,8 @@ all: $(LIBRARY)
 
 # Generate JNI header
 $(JNI_HEADER): $(JAVA_SRC)
+	update-java-alternatives -l 
+	echo "JAVA_HOME IS ${JAVA_HOME}"
 	$(JAVAC) -h $(SRC_DIR) $(JAVA_SRC)
 
 # Compile C
