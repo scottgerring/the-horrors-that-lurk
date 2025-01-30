@@ -28,26 +28,17 @@ public class TagLibrary {
      */
     private static void loadNativeLibrary() {
         String osName = System.getProperty("os.name").toLowerCase();
-        String osArch = System.getProperty("os.arch").toLowerCase();
 
         // Determine the library name based on the OS and architecture
         String libraryName = "libtag-";
         if (osName.contains("win")) {
             throw new UnsupportedOperationException("Windows is not supported.");
         } else if (osName.contains("mac")) {
-            libraryName += "darwin-";
+            libraryName += "darwin.so";
         } else if (osName.contains("linux")) {
-            libraryName += "linux-";
+            libraryName += "linux.so";
         } else {
             throw new UnsupportedOperationException("Unsupported operating system: " + osName);
-        }
-
-        if (osArch.contains("aarch64") || osArch.contains("arm64")) {
-            libraryName += "arm64.so";
-        } else if (osArch.contains("x86_64") || osArch.contains("amd64")) {
-            libraryName += "amd64.so";
-        } else {
-            throw new UnsupportedOperationException("Unsupported architecture: " + osArch);
         }
 
         // Load the library from the JAR's resources
@@ -68,11 +59,11 @@ public class TagLibrary {
         // Create a temporary file to extract the library
         File tempFile = File.createTempFile(libraryName, null);
         tempFile.deleteOnExit();
-
+        
         // Copy the library from the JAR to the temporary file
         Files.copy(libraryStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         libraryStream.close();
-
+        
         // Load the extracted library
         System.load(tempFile.getAbsolutePath());
     }

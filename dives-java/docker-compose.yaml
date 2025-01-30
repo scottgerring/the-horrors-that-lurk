@@ -2,7 +2,8 @@ services:
   divesite-api:
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.alpine
+      # Dev build
+      dockerfile: src/main/docker/Dockerfile.jvm
     environment:
       QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://db:5432/${POSTGRES_DB}"
       QUARKUS_DATASOURCE_USERNAME: ${POSTGRES_USER}
