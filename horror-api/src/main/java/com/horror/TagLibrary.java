@@ -27,19 +27,8 @@ public class TagLibrary {
      * @return the name of the library to load
      */
     private static void loadNativeLibrary() {
-        String osName = System.getProperty("os.name").toLowerCase();
-
-        // Determine the library name based on the OS and architecture
-        String libraryName = "libtag-";
-        if (osName.contains("win")) {
-            throw new UnsupportedOperationException("Windows is not supported.");
-        } else if (osName.contains("mac")) {
-            libraryName += "darwin.so";
-        } else if (osName.contains("linux")) {
-            libraryName += "linux.so";
-        } else {
-            throw new UnsupportedOperationException("Unsupported operating system: " + osName);
-        }
+        // The library to load
+        String libraryName = "libtag.so";
 
         // Load the library from the JAR's resources
         try {

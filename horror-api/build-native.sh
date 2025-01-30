@@ -6,12 +6,8 @@ set -e
 mkdir -p ./output
 
 echo "Building for linux"
-docker build --platform linux/amd64 -t native-build-amd64 .
-docker create --name extract-native-build-amd64 native-build-amd64
-docker cp extract-native-build-amd64:/app/libtag_library.so ./output/libtag-linux.so
-docker rm -f extract-native-build-amd64
+docker build --platform linux/amd64 -t extract-native-build .
+docker create --name extract-extract-native-build extract-native-build
+docker cp extract-extract-native-build:/app/libtag_library.so ./output/libtag.so
+docker rm -f extract-extract-native-build
 
-# MacOS - ARM64 build
-. ~/.sdkman/bin/sdkman-init.sh
-sdk use java 21-oracle
-gcc -shared -fPIC -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/darwin" src/native-src/TagLibrary.c -o output/libtag-darwin.so

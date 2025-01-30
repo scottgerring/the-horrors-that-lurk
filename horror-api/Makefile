@@ -6,14 +6,7 @@ CFLAGS := -shared -fPIC
 JAVA_HOME ?= $(shell readlink -f /usr/bin/java | sed "s:/bin/java::")
 JAVAC := $(JAVA_HOME)/bin/javac
 
-# Discover our JNI includes based on platform, then add to the CFLAGS
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Darwin)
-    JNI_PLATFORM := darwin
-else
-    JNI_PLATFORM := linux
-endif
-CFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(JNI_PLATFORM)
+CFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 
 # Directories
 SRC_DIR := src/native-src
